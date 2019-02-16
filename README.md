@@ -14,3 +14,4 @@
 * Pull all events by organization and allow user to check
 * Nicer Front End?
 * Confirmation Page
+* Authentication flow
