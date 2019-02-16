@@ -14,6 +14,7 @@
 
 <?php
     //Form submission stuff
+    $FormMessage = "";
     if(isset($_POST) && $_POST['submit'] == "Submit")
     {
         $TrimmedEmails = str_replace(' ', '', $_POST['Emails']);
@@ -21,12 +22,16 @@
         
         foreach ($EmailList as $i => $email)
         {
-            $TicketCode = GenerateDiscountCode($_POST['TicketType'], $_POST['Discount']);
+            //In case they ended the string with a semicolon
+            if(trim($email) != "")
+            {
+                $TicketCode = GenerateDiscountCode($_POST['TicketType'], $_POST['Discount']);
 
-            if($TicketCode)
-                SendEmail($email, $_POST['EmailSubject'], $_POST['EmailBody'], $TicketCode);
-            else
-                echo sprintf("Couldn't generate a code for %s.<br />\n", $email);
+                if($TicketCode)
+                    $FormMessage .= SendEmail($email, $_POST['EmailSubject'], $_POST['EmailBody'], $TicketCode);
+                else
+                    $FormMessage .= sprintf("Couldn't generate a code for %s.<br />\n", $email);
+            }
         }
     }
 ?>
@@ -82,6 +87,8 @@
                         </div>
                     </fieldset>
                 </form>
+                <br /><br />
+                <span class="pure-form-message-inline"><?php echo $FormMessage; ?></span>
             </div>
             <div class="pure-u-1-4"></div>
         </div>

@@ -39,10 +39,10 @@ function SendEmail($email, $subject, $body, $code)
         $mail->Body    = $MailBody;
     
         $mail->send();
-        echo sprintf("Success: %s - %s<br />\n", $email, $code);
+        return sprintf("Success: %s - %s<br />\n", $email, $code);
     } catch (Exception $e) {
-        echo 'Message could not be sent.';
-        echo 'Mailer Error: ' . $mail->ErrorInfo;
+        return sprintf('Message could not be sent to %s, but code %s was still created.', $email, $code);
+        //echo 'Mailer Error: ' . $mail->ErrorInfo;
     }
 }
 ?>
