@@ -14,3 +14,4 @@ TO DO:
 * UI/UX improvements
 * G Suite SSO
 * Authentiated Email
+* Email Template

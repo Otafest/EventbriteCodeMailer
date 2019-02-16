@@ -1,8 +1,6 @@
 <?php
 require_once('config.php');
 
-//No need to change anything below this line
-
 //Include trailing slash
 DEFINE("EBAPI", "https://www.eventbriteapi.com/v3/");
 
@@ -34,7 +32,7 @@ function GetTicketTypes()
 
     //Iterating to generate a list of ticket names
     foreach ($TicketData as $n => $v) {
-        $TicketPrice = ($v->free == false) ? $v->actual_cost->major_value : "0.00";
+        $TicketPrice = ($v->free == false) ? $v->actual_cost->display : "FREE";
         $TicketName = $v->name;
         $ReturnArray[] = array($TicketName . " (" . $TicketPrice . ")", $v->id);
     }
@@ -53,6 +51,7 @@ function GenerateDiscountCode($TicketId, $PercentOff)
     $i = 0;
     do
     {
+        //Add the user-defined prefix to a random code
         $DiscountCode = CODE_PREFIX . GenerateRandomCode();
 
         $DiscountBody = array (
