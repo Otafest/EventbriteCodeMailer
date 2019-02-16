@@ -39,6 +39,4 @@ DEFINE("MAIL_DEFAULT_SUBJECT", "[Action Required] Your ticket code");
 //The HTML email body. Type %%code%% wherever you want the discount code to appear.
 DEFINE("MAIL_DEFAULT_BODY", "Thanks for purchasing your ticket to Otafest!<br /><br /><strong>You're not done yet</strong>, please use the following code to claim your ticket: <a href='https://otafest.eventbrite.ca?discount=%%code%%'>%%code%%</a>");
 
-//Email functionality thanks to https://github.com/snipworks/php-smtp
-
 ?>
