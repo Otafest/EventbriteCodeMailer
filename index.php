@@ -15,7 +15,7 @@
 <?php
     //Form submission stuff
     $FormMessage = "";
-    if(isset($_POST) && $_POST['submit'] == "Submit")
+    if(isset($_POST) && $_POST['submit'] == "Send Emails")
     {
         $TrimmedEmails = str_replace(' ', '', $_POST['Emails']);
         $EmailList = explode(";", $TrimmedEmails);
@@ -83,7 +83,7 @@
                             <input id="Discount" name="Discount" type="number" min=0 max=100 value=100>
                         </div>
                         <div class="pure-controls">
-                             <input type="submit" class="pure-button pure-button-primary" name="submit" value="Submit" />
+                             <input type="submit" class="pure-button pure-button-primary" name="submit" value="Send Emails" />
                         </div>
                     </fieldset>
                 </form>
