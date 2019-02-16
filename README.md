@@ -10,4 +10,7 @@ How to set up:
 
 TO DO:
 * Pull all events by organization and allow user to check
+* Front End
 * UI/UX improvements
+* G Suite SSO
+* Authentiated Email

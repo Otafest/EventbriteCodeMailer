@@ -6,6 +6,9 @@ require_once('config.php');
 //Include trailing slash
 DEFINE("EBAPI", "https://www.eventbriteapi.com/v3/");
 
+//$tickets = GetTicketTypes();
+//print_r($tickets);
+
 // Grab available ticket types
 function GetTicketTypes()
 {
@@ -17,11 +20,11 @@ function GetTicketTypes()
     do
     {
         //Let's grab us some ticket types!
-        $TicketTypesUrl = "events/" . EVENT_ID . "ticket_classes" . $continuation;
+        $TicketTypesUrl = "events/" . EVENT_ID . "/ticket_classes" . $continuation;
         $EbTickets = CallEbApi("GET", $TicketTypesUrl);
 
         //Add this page's ticket data to our master array
-        $TicketData = array_merge($TicketData, $EbTickets->ticket_classes);
+        $TicketData = array_merge($TicketData, (array) $EbTickets->ticket_classes);
 
         //Are there more pages of ticket classes?
         $is_there_more = $EbTickets->pagination->has_more_items;
@@ -36,7 +39,7 @@ function GetTicketTypes()
     foreach ($TicketData as $n => $v) {
         $TicketPrice = ($v->free == false) ? $v->actual_cost->major_value : "0.00";
         $TicketName = $v->name;
-        $ReturnArray[$v->id] = $TicketName . " (" . $TicketPrice . ")";
+        $ReturnArray[] = array($TicketName . " (" . $TicketPrice . ")", $v->id);
     }
 
     //Alphabetize the array
@@ -50,6 +53,7 @@ function GenerateDiscountCode($TicketId, $PercentOff)
 {
     //TODO: type check $PercentOff for 2 decimal place percentage
 
+    $i = 0;
     do
     {
         $DiscountCode = CODE_PREFIX . GenerateRandomCode();
@@ -72,9 +76,16 @@ function GenerateDiscountCode($TicketId, $PercentOff)
         $OrganizationId = GetOrganizationId(EVENT_ID);
         $DiscountUrl = "organizations/" . $OrganizationId . "/discounts";
 
-        //Generate the code
+        //Generate the code - will return false if code is a duplicate/error/etc.
         $DiscountCreation = CallEbApi("POST", $DiscountUrl, $RequestBody);
-    } while ($DiscountCreation == FALSE);
+
+        //Emergency counter to prevent infinite loops
+        $i++;
+    } while ($DiscountCreation == FALSE && $i < 10);
+
+    if($DiscountCreation == FALSE)
+        return FALSE;
+    return $DiscountCode;
 }
 
 function GenerateRandomCode()
@@ -101,7 +112,7 @@ function GetOrganizationId()
 {
     //I could have set this as yet another input parameter
     //but I can just as easily get it with another call.
-    $OrgUrl = "events/" . EVENT_ID
+    $OrgUrl = "events/" . EVENT_ID;
     $EventInfo = CallEbApi("GET", $OrgUrl);
 
     return $EventInfo->organization_id;
@@ -112,7 +123,8 @@ function GetOrganizationId()
 // Data: array("param" => "value") ==> index.php?param=value
 function CallEbApi($method, $url, $data = false)
 {
-    $url = EBAPI . (substr($url, 0, 1) == "/") ? substr($url,1) : $url;
+    $url = (substr($url, 0, 1) == "/") ? substr($url,1) : $url;
+    $FullUrl = EBAPI . $url;
 
     $curl = curl_init();
 	
@@ -134,31 +146,33 @@ function CallEbApi($method, $url, $data = false)
             break;
         default:
             if ($data)
-                $url = sprintf("%s?%s", $url, http_build_query($data));
+                $FullUrl = sprintf("%s?%s", $FullUrl, http_build_query($data));
     }
 
 	//Set headers
     $headers = array( 
         "Content-Type: " . $content_type , 
-        "Authorization: Bearer " . EB_API_KEY, 
-        "Content-Length: " . strlen($data)
+        "Authorization: Bearer " . EB_API_KEY
     );
-	
+    
 	curl_setopt_array($curl, array(
-		CURLOPT_URL				=> $url,
+		CURLOPT_URL				=> $FullUrl,
 		CURLOPT_HTTPHEADER		=> $headers,
 		CURLOPT_CRLF			=> 1,
-		CURLOPT_RETURNTRANSFER	=> 1,
-		//CURLOPT_VERBOSE         => 1,           // Logs verbose output to STDERR
-		//CURLOPT_STDERR          => $curl_log,   // Output STDERR log to file
+        CURLOPT_RETURNTRANSFER	=> 1,
+        CURLOPT_FOLLOWLOCATION  => 1
 	));
 
     $result = curl_exec($curl);
 
-    //If 200/201, return value
-    //If 400+ return false
-	
+    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close($curl);
-    return json_decode($result);
+
+    //If 200/201, return value
+    if($httpcode == 200 || $httpcode == 201)
+        return json_decode($result);
+
+    //If anything else return false
+    return false;
 }
 ?>
