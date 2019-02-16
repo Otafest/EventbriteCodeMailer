@@ -6,9 +6,6 @@ require_once('config.php');
 //Include trailing slash
 DEFINE("EBAPI", "https://www.eventbriteapi.com/v3/");
 
-//$tickets = GetTicketTypes();
-//print_r($tickets);
-
 // Grab available ticket types
 function GetTicketTypes()
 {
