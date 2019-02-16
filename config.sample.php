@@ -3,12 +3,12 @@
 /******************** EVENTBRITE SETTINGS ********************/
 
 //Get this from https://www.eventbrite.ca/platform/api-keys
-DEFINE("EB_API_KEY", "");
+DEFINE("EB_API_KEY", "REPLACETHISTEXTWITHYOURKEY");
 
 //Get this from your Eventbrite URL
 //e.g. if your URL is https://www.eventbrite.ca/e/otafest-2019-tickets-45864012496
 //Then your event id is 45864012496
-DEFINE("EVENT_ID", "");
+DEFINE("EVENT_ID", "REPLACETHISTEXTWITHYOUREVENTID");
 
 //If you want the discount codes generated here to have a
 //certain prefix, add it below.
@@ -25,7 +25,7 @@ DEFINE("MAIL_USER", "");
 DEFINE("MAIL_PASS", "");
 
 //Email port (probably one of 25, 587, 465, or 993)
-DEFINE("MAIL_PORT", "587");
+DEFINE("MAIL_PORT", 587);
 
 //Email encryption. TRUE if using TLS, FALSE if not.
 DEFINE("MAIL_TLS", TRUE);

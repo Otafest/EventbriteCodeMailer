@@ -14,12 +14,10 @@ function SendEmail($email, $subject, $body, $code)
     $MailBody = str_replace ( '%%code%%' , $code , $body );
     $MailSubject = str_replace ( '%%code%%' , $code , $subject );
 
-    echo sprintf("Preparing to send an e-mail! <br /> Email: %s <br /> Subject: %s <br /> Body: %s <br /> Code: %s<br />\n", $email, $MailSubject, $MailBody, $code);
-
     $mail = new PHPMailer(true);   // Passing `true` enables exceptions
     try {
         //Server settings
-        $mail->SMTPDebug = 2;      // Enable verbose debug output
+        $mail->SMTPDebug = 0;
         $mail->isSMTP();           // Set mailer to use SMTP
         $mail->Host = MAIL_HOST;
         $mail->SMTPAuth = true;

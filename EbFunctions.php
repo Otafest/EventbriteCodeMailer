@@ -55,8 +55,6 @@ function GenerateDiscountCode($TicketId, $PercentOff)
         //Add the user-defined prefix to a random code
         $DiscountCode = CODE_PREFIX . GenerateRandomCode();
 
-        echo sprintf("Attempting to create %s with %s off for ticket %s<br />\n", $DiscountCode, $PercentOff, $TicketId);
-
         $DiscountBody = array (
             'discount' => array (
                 'type' => 'coded',
