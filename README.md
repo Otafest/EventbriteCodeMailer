@@ -7,6 +7,7 @@ How to set up:
 1. Copy your private API key into config.php
 
 (Instructions for event id)
+(instructions for composer)
 
 TO DO:
 * Pull all events by organization and allow user to check
@@ -15,3 +16,4 @@ TO DO:
 * G Suite SSO
 * Authentiated Email
 * Email Template
+* Confirmation Page

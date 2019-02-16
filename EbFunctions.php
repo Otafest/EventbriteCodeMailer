@@ -1,5 +1,6 @@
 <?php
 require_once('config.php');
+require_once('Email.php');
 
 //Include trailing slash
 DEFINE("EBAPI", "https://www.eventbriteapi.com/v3/");
@@ -54,6 +55,8 @@ function GenerateDiscountCode($TicketId, $PercentOff)
         //Add the user-defined prefix to a random code
         $DiscountCode = CODE_PREFIX . GenerateRandomCode();
 
+        echo sprintf("Attempting to create %s with %s off for ticket %s<br />\n", $DiscountCode, $PercentOff, $TicketId);
+
         $DiscountBody = array (
             'discount' => array (
                 'type' => 'coded',
@@ -67,13 +70,11 @@ function GenerateDiscountCode($TicketId, $PercentOff)
             )
         );
 
-        $RequestBody = json_encode($DiscountBody);
-
         $OrganizationId = GetOrganizationId(EVENT_ID);
-        $DiscountUrl = "organizations/" . $OrganizationId . "/discounts";
+        $DiscountUrl = "organizations/" . $OrganizationId . "/discounts/";
 
         //Generate the code - will return false if code is a duplicate/error/etc.
-        $DiscountCreation = CallEbApi("POST", $DiscountUrl, $RequestBody);
+        $DiscountCreation = CallEbApi("POST", $DiscountUrl, $DiscountBody);
 
         //Emergency counter to prevent infinite loops
         $i++;
@@ -113,7 +114,6 @@ function GetOrganizationId()
 
     return $EventInfo->organization_id;
 }
-// Send discount code
 
 // Method: POST, PUT, GET etc
 // Data: array("param" => "value") ==> index.php?param=value
@@ -124,7 +124,7 @@ function CallEbApi($method, $url, $data = false)
 
     $curl = curl_init();
 	
-	$content_type = "application/json; charset=utf-8";
+	$content_type = "application/json";
 	
     switch ($method)
     {
@@ -157,7 +157,7 @@ function CallEbApi($method, $url, $data = false)
 		CURLOPT_CRLF			=> 1,
         CURLOPT_RETURNTRANSFER	=> 1,
         CURLOPT_FOLLOWLOCATION  => 1
-	));
+    ));
 
     $result = curl_exec($curl);
 
