@@ -47,7 +47,11 @@ function GetTicketTypes()
 // Generate unique discount code
 function GenerateDiscountCode($TicketId, $PercentOff)
 {
-    //TODO: type check $PercentOff for 2 decimal place percentage
+    //Check $PercentOff to make sure it's playing nicely
+    if(!is_numeric($PercentOff) || $PercentOff > 100 || $PercentOff < 0)
+        return FALSE;
+    
+    $PercentOff = round($PercentOff, 2);
 
     $i = 0;
     do
