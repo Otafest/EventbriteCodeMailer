@@ -1,6 +1,6 @@
 <?php
-    require_once('EbFunctions.php');
-    require_once('Email.php');
+    require_once('lib/EbFunctions.php');
+    require_once('lib/Email.php');
     require_once('config.php');
 
     //Let's grab our ticket types from Eventbrite and throw them in a select box

@@ -1,6 +1,5 @@
 <?php
 require_once('config.php');
-require_once('Email.php');
 
 //Include trailing slash
 DEFINE("EBAPI", "https://www.eventbriteapi.com/v3/");
